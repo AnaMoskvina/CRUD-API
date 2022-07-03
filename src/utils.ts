@@ -1,4 +1,4 @@
-import { db } from './DB'
+import { userRepository } from './userRepository'
 import { validate } from 'uuid'
 
 export const usersEndpoint = '/api/users'
@@ -6,7 +6,7 @@ export const usersEndpoint = '/api/users'
 export const getIsValidUuid = (id: string) => validate(id)
 
 export const getIfIdExist = (id: string) => {
-    return !!db.getUsers().find(user => user.id === id)
+    return !!userRepository.getUsers().find(user => user.id === id)
 }
 
 export const getIsUrlValid = (url: string) => {

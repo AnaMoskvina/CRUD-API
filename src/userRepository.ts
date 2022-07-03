@@ -1,19 +1,16 @@
 import crypto from 'crypto'
 import { Store, User, NewUser } from './types'
 
-class DB {
-    private store: Store
+const store: Store = {}
 
-    constructor() {
-        this.store = {}
-    }
+class UserRepository {
 
     getUsers(): User[] {
-        return Object.values(this.store)
+        return Object.values(store)
     }
 
     getUser(id: string): User | null {
-        return this.store[id] ? this.store[id] : null
+        return store[id] ? store[id] : null
     }
 
     postUser(user: NewUser): User {
@@ -22,22 +19,22 @@ class DB {
             ...user,
             id: uuid
         }
-        this.store[uuid] = createdUser
+        store[uuid] = createdUser
         return createdUser
     }
 
     deleteUser(id: string) {
-        delete this.store[id]
+        delete store[id]
     }
 
     putUser(id: string, user: User) {
         const updatedUser = {
-            ...this.store[id],
+            ...store[id],
             ...user
         }
-        this.store[id] = updatedUser
+        store[id] = updatedUser
         return updatedUser
     }
 }
 
-export const db = new DB()
+export const userRepository = new UserRepository()

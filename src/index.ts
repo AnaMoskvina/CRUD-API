@@ -1,6 +1,6 @@
 require('dotenv').config()
 import http from  'http'
-import { db } from './DB'
+import { userRepository } from './userRepository'
 import { 
     getIsValidUuid, 
     getIfIdExist, 
@@ -13,12 +13,12 @@ import {
 const port = process.env.PORT
 
 // Inital data in DB
-db.postUser({
+userRepository.postUser({
     username: 'user',
     age: 30,
     hobbies: []
 })
-db.postUser({
+userRepository.postUser({
     username: 'user1',
     age: 33,
     hobbies: ['coding']
@@ -53,12 +53,12 @@ const requestListener = function (req, res) {
     if (method === 'GET') {
         if (!id) {
             res.writeHead(200)
-            res.write(JSON.stringify(db.getUsers()))
+            res.write(JSON.stringify(userRepository.getUsers()))
             res.end()
         } else {
             const handleSuccess = () => {
                 res.writeHead(200)
-                res.write(JSON.stringify(db.getUser(id)))
+                res.write(JSON.stringify(userRepository.getUser(id)))
                 res.end()
             }
             respondWithIdCheck(id, handleSuccess)
@@ -76,7 +76,7 @@ const requestListener = function (req, res) {
                 res.write('Body should contain username (string), age (number) and hobbies (empty array or array of strings)')
                 res.end()
             } else {
-                const createdUser = db.postUser(bodyObj)
+                const createdUser = userRepository.postUser(bodyObj)
                 res.setHeader('Content-Type', 'application/json')
                 res.writeHead(201)
                 res.write(JSON.stringify(createdUser))
@@ -110,7 +110,7 @@ const requestListener = function (req, res) {
 
     if (method === 'DELETE') {
         const handleSuccess = () => {
-            db.deleteUser(id)
+            userRepository.deleteUser(id)
             res.writeHead(204)
             res.end()
         }
