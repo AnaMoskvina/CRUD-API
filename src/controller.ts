@@ -20,7 +20,7 @@ const getIsUrlValid = (url: string) => {
     return true
 }
 
-export const controller = (req, res) => {
+export const controller = async (req, res) => {
     try {
         const { url, method } = req
         if (!getIsUrlValid(url)) {
@@ -30,19 +30,21 @@ export const controller = (req, res) => {
     
         switch (method) {
             case 'GET': 
+                const getResBody = await service.get(id)
                 res.writeHead(STATUS_CODES.SUCCESS)
-                res.write(JSON.stringify(service.get(id)))
+                res.write(JSON.stringify(getResBody))
                 res.end()
                 break;
             case 'POST': 
                 const postBody: string[] = []
                 req.on('data', chunk => {
                     postBody.push(chunk);
-                }).on('end', () => { 
+                }).on('end', async () => { 
                     const bodyObj = JSON.parse(postBody.toString())
+                    const resBodyPost = await service.post(bodyObj)
                     res.setHeader('Content-Type', 'application/json')
                     res.writeHead(STATUS_CODES.CREATED)
-                    res.write(JSON.stringify(service.post(bodyObj)))
+                    res.write(JSON.stringify(resBodyPost))
                     res.end()
                 })
                 break;
@@ -50,16 +52,17 @@ export const controller = (req, res) => {
                 const putBody: string[] = []
                 req.on('data', chunk => {
                     putBody.push(chunk)
-                }).on('end', () => { 
+                }).on('end', async () => { 
                     const bodyObj = JSON.parse(putBody.toString())
+                    const resBodyPut = await service.put(id, bodyObj)
                     res.setHeader('Content-Type', 'application/json')
                     res.writeHead(STATUS_CODES.SUCCESS)
-                    res.write(JSON.stringify(service.put(id, bodyObj)))
+                    res.write(JSON.stringify(resBodyPut))
                     res.end()
                 })
                 break;
             case 'DELETE':
-                service.delete(id)
+                await service.delete(id)
                 res.writeHead(STATUS_CODES.DELETED)
                 res.end()
                 break;

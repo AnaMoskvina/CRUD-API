@@ -5,35 +5,36 @@ const store: Store = {}
 
 class UserRepository {
 
-    getUsers(): User[] {
-        return Object.values(store)
+    getUsers(): Promise<User[]> {
+        return Promise.resolve(Object.values(store))
     }
 
-    getUser(id: string): User | null {
-        return store[id] ? store[id] : null
+    getUser(id: string): Promise<User> | Promise<null> {
+        return Promise.resolve(store[id] ? store[id] : null)
     }
 
-    postUser(user: NewUser): User {
+    postUser(user: NewUser): Promise<User> {
         const uuid = crypto.randomUUID({disableEntropyCache : true})
         const createdUser = {
             ...user,
             id: uuid
         }
         store[uuid] = createdUser
-        return createdUser
+        return Promise.resolve(createdUser)
     }
 
-    deleteUser(id: string) {
+    deleteUser(id: string): Promise<null> {
         delete store[id]
+        return Promise.resolve(null)
     }
 
-    putUser(id: string, user: Partial<User>) {
+    putUser(id: string, user: Partial<User>): Promise<User> {
         const updatedUser = {
             ...store[id],
             ...user
         }
         store[id] = updatedUser
-        return updatedUser
+        return Promise.resolve(updatedUser)
     }
 }
 

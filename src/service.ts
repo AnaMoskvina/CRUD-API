@@ -4,8 +4,9 @@ import { BASE_URL, ERROR_MESSAGES, ValidationError, NotFoundError } from './cons
 import { User, NewUser } from './types'
 
 
-const getIsIdExist = (id: string) => {
-    return !!userRepository.getUsers().find(user => user.id === id)
+const getIsIdExist = async (id: string) => {
+    const users = await userRepository.getUsers()
+    return !!users.find(user => user.id === id)
 }
 
 const getIsPostBodyValid = body => {
@@ -34,29 +35,29 @@ const getIsPutBodyValid = body => {
 
 
 class Service {
-    get(id?: string) {
+    async get(id?: string) {
         if (!id) {
-            return userRepository.getUsers()
+            return await userRepository.getUsers()
         } else {
             if (!validate(id)) {
                 throw new ValidationError(ERROR_MESSAGES.INVALID_ID)
             } else if (!getIsIdExist(id)) {
                 throw new NotFoundError(ERROR_MESSAGES.NOT_FOUND)
             } else {
-                return userRepository.getUser(id)
+                return await userRepository.getUser(id)
             }
         }
     }
 
-    post(newUser: NewUser) {
+    async post(newUser: NewUser) {
         if (!getIsPostBodyValid(newUser)) {
             throw new ValidationError(ERROR_MESSAGES.INVALID_BODY)
         } else {
-            return userRepository.postUser(newUser)
+            return await userRepository.postUser(newUser)
         }
     }
 
-    put(id: string, user: Partial<User>) {
+    async put(id: string, user: Partial<User>) {
         if (!id) {
             throw new NotFoundError(ERROR_MESSAGES.INVALID_URL)
         } else if (!validate(id)) {
@@ -66,11 +67,11 @@ class Service {
         } else if (!getIsPutBodyValid(user)) {
             throw new ValidationError(ERROR_MESSAGES.INVALID_BODY)
         } else {
-            return userRepository.putUser(id, user)
+            return await userRepository.putUser(id, user)
         }
     }
 
-    delete(id: string) {
+    async delete(id: string) {
         if (!id) {
             throw new NotFoundError(ERROR_MESSAGES.INVALID_URL)
         } else if (!validate(id)) {
@@ -78,7 +79,7 @@ class Service {
         } else if (!getIsIdExist(id)) {
             throw new NotFoundError(ERROR_MESSAGES.NOT_FOUND)
         } else {
-            userRepository.deleteUser(id)
+            await userRepository.deleteUser(id)
         } 
     }
 }
