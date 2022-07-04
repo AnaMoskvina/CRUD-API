@@ -10,5 +10,12 @@ export const enum STATUS_CODES {
 export const enum ERROR_MESSAGES {
     INVALID_BODY = 'Invalid body type',
     SERVER_ERROR = 'Error on server side',
-    NOT_EXISTS = 'User does not exist'
+    NOT_FOUND = 'User is not found',
+    INVALID_ID = 'Id is invalid',
+    INVALID_URL = 'Invalid request url'
 }
+
+export const BASE_URL = '/api/users'
+
+export class NotFoundError extends Error {}
+export class ValidationError extends Error {}

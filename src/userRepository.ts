@@ -27,7 +27,7 @@ class UserRepository {
         delete store[id]
     }
 
-    putUser(id: string, user: User) {
+    putUser(id: string, user: Partial<User>) {
         const updatedUser = {
             ...store[id],
             ...user
