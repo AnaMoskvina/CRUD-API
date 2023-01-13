@@ -1,6 +1,6 @@
 import { validate } from 'uuid'
 import { userRepository } from './userRepository'
-import { BASE_URL, ERROR_MESSAGES, ValidationError, NotFoundError } from './constants'
+import { ERROR_MESSAGES, ValidationError, NotFoundError } from './constants'
 import { User, NewUser } from './types'
 
 
